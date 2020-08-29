@@ -11,6 +11,7 @@ import java.util.List;
  *
  */
 public class CapGraph implements Graph {
+	private HashMap<Integer, Vertex> vertices = new HashMap<>();
 
 
 	/* (non-Javadoc)
@@ -18,8 +19,11 @@ public class CapGraph implements Graph {
 	 */
 	@Override
 	public void addVertex(int num) {
-		// TODO Auto-generated method stub
-
+		if (num < 0) throw new IllegalArgumentException(
+								"num of vertex can't be less than zero");
+		if (vertices.containsKey(num)) throw new IllegalArgumentException(
+								"vertex is already added");
+		vertices.put(num, new Vertex(num));
 	}
 
 	/* (non-Javadoc)
@@ -27,8 +31,13 @@ public class CapGraph implements Graph {
 	 */
 	@Override
 	public void addEdge(int from, int to) {
-		// TODO Auto-generated method stub
+		if (from < 0 || to < 0) throw new IllegalArgumentException(
+				"num of vertex can't be less than zero");
+		if (!vertices.containsKey(from)) throw new IllegalArgumentException(
+				"vertex must be added");
 
+		Vertex vert = vertices.get(from);
+		vert.addEdgeTo(to);
 	}
 
 	/* (non-Javadoc)

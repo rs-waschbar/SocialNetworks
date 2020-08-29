@@ -1,27 +1,28 @@
 package graph;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class Vertex {
     private final int num;
-    private HashMap<Vertex, Edge> edges;
+    private HashSet<Integer> edges;
 
     public Vertex(int num) {
         this.num = num;
+        edges = new HashSet<>();
     }
 
     public int getNum() {
         return num;
     }
 
-    public HashMap<Vertex, Edge> getEdges() {
+    public HashSet<Integer> getEdges() {
         return edges;
     }
 
-    public void addEdgeTo(Vertex vert) {
-        Edge edge = new Edge(this, vert);
-        edges.put(vert, edge);
+    public void addEdgeTo(int vertNum) {
+        edges.add(vertNum);
     }
 
     @Override
@@ -29,11 +30,12 @@ public class Vertex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vertex vertex = (Vertex) o;
-        return num == vertex.num;
+        return num == vertex.num &&
+                Objects.equals(edges, vertex.edges);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(num);
+        return Objects.hash(num, edges);
     }
 }
