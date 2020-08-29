@@ -45,9 +45,4 @@ public class Vertex implements Cloneable {
     public int hashCode() {
         return Objects.hash(num, edges);
     }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }
