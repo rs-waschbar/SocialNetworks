@@ -4,7 +4,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class Vertex {
+/**
+ * @author Ruslan Zhdanov.
+ *
+ * The warm up assignment, implement of a Graph for socialNetworks.
+ *
+ */
+
+public class Vertex implements Cloneable {
     private final int num;
     private HashSet<Integer> edges;
 
@@ -37,5 +44,10 @@ public class Vertex {
     @Override
     public int hashCode() {
         return Objects.hash(num, edges);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

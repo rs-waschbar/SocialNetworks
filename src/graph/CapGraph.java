@@ -3,6 +3,7 @@ package graph;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ruslan Zhdanov.
@@ -11,8 +12,11 @@ import java.util.List;
  *
  */
 public class CapGraph implements Graph {
-	private HashMap<Integer, Vertex> vertices = new HashMap<>();
+	private HashMap<Integer, Vertex> vertices;
 
+	public CapGraph() {
+		vertices = new HashMap<>();
+	}
 
 	/* (non-Javadoc)
 	 * @see graph.Graph#addVertex(int)
@@ -33,11 +37,19 @@ public class CapGraph implements Graph {
 	public void addEdge(int from, int to) {
 		if (from < 0 || to < 0) throw new IllegalArgumentException(
 				"num of vertex can't be less than zero");
-		if (!vertices.containsKey(from)) throw new IllegalArgumentException(
-				"vertex must be added");
+		Vertex vert;
 
-		Vertex vert = vertices.get(from);
+		if (vertices.containsKey(from)) {
+			vert = vertices.get(from);
+		}
+		else {
+			vert = new Vertex(from);
+		}
 		vert.addEdgeTo(to);
+	}
+
+	public Set<Integer> getVertNums() {
+		return vertices.keySet();
 	}
 
 	/* (non-Javadoc)
@@ -45,6 +57,31 @@ public class CapGraph implements Graph {
 	 */
 	@Override
 	public Graph getEgonet(int center) {
+		if (center < 0) throw new IllegalArgumentException(
+								"num of vertex can't be less than zero");
+
+		Graph egonet = new CapGraph();
+		if (!this.vertices.containsKey(center)) return egonet;
+
+		HashSet<Integer> neighbours = this.vertices.get(center).getEdges();
+		egonet.addVertex(center);
+		for (Integer v : neighbours) {
+			egonet.addVertex(v);
+			egonet.addEdge(center, v);
+		}
+
+
+		// возможно переделать,
+		// для всех чуваков номеров на том конце если у них есть
+		// ссылка на дргуих чуваков из набора ключей егонета -
+		// создать грани
+
+
+
+
+
+
+
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -63,8 +100,13 @@ public class CapGraph implements Graph {
 	 */
 	@Override
 	public HashMap<Integer, HashSet<Integer>> exportGraph() {
-		// TODO Auto-generated method stub
-		return null;
+		if (vertices == null) return null;
+
+		HashMap<Integer, HashSet<Integer>> export = new HashMap<>();
+		for (Integer key : vertices.keySet()) {
+			export.put(key, vertices.get(key).getEdges());
+		}
+		return export;
 	}
 
 }
