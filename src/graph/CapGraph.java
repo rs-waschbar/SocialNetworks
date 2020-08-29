@@ -1,6 +1,3 @@
-/**
- * 
- */
 package graph;
 
 import java.util.HashMap;
@@ -8,13 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * @author Your name here.
+ * @author Ruslan Zhdanov.
  * 
- * For the warm up assignment, you must implement your Graph in a class
- * named CapGraph.  Here is the stub file.
+ * The warm up assignment, implement of a Graph for socialNetworks.
  *
  */
 public class CapGraph implements Graph {
+
 
 	/* (non-Javadoc)
 	 * @see graph.Graph#addVertex(int)
