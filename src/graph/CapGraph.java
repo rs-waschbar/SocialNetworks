@@ -31,6 +31,13 @@ public class CapGraph implements Graph {
 		vertices.put(num, new Vertex(num));
 	}
 
+	public Vertex getVertex(int num) {
+		if (!vertices.containsKey(num)) throw new IllegalArgumentException(
+				"Graph don't contains this Vertex number");
+
+		return vertices.get(num);
+	}
+
 	/* (non-Javadoc)
 	 * @see graph.Graph#addEdge(int, int)
 	 */
@@ -45,6 +52,7 @@ public class CapGraph implements Graph {
 		}
 		else {
 			vert = new Vertex(from);
+			vertices.put(from, vert);
 		}
 		vert.addEdgeTo(to);
 	}
@@ -105,12 +113,6 @@ public class CapGraph implements Graph {
 
 	@Override
 	public String toString() {
-		/*System.out.println("******");
-		System.out.println("CapGraph");
-		if (vertices.size() == 0) {
-			System.out.println("Empty Graph");
-		}*/
-
 		return "CapGraph{" +
 				"vertices=" + vertices.keySet() +
 				'}';
