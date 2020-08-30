@@ -59,31 +59,24 @@ public class CapGraph implements Graph {
 	public Graph getEgonet(int center) {
 		if (center < 0) throw new IllegalArgumentException(
 								"num of vertex can't be less than zero");
+        CapGraph egonet = new CapGraph();
+		if (!this.vertices.containsKey(center))
+		    return egonet;
 
-		Graph egonet = new CapGraph();
-		if (!this.vertices.containsKey(center)) return egonet;
+        egonet.addVertex(center);
+		HashSet<Integer> egoVerts = this.vertices.get(center).getEdges();
+		egoVerts.add(center);
 
-		HashSet<Integer> neighbours = this.vertices.get(center).getEdges();
-		egonet.addVertex(center);
-		for (Integer v : neighbours) {
-			egonet.addVertex(v);
-			egonet.addEdge(center, v);
-		}
+		for (Integer egoVert1 : egoVerts) {
+            HashSet<Integer> allVertNeighbours = this.vertices.get(egoVert1).getEdges();
 
-
-		// возможно переделать,
-		// для всех чуваков номеров на том конце если у них есть
-		// ссылка на дргуих чуваков из набора ключей егонета -
-		// создать грани
-
-
-
-
-
-
-
-		// TODO Auto-generated method stub
-		return null;
+            for (Integer egoVert2 : egoVerts) {
+                if (allVertNeighbours.contains(egoVert2)) {
+                    egonet.addEdge(egoVert1, egoVert2);
+                }
+            }
+        }
+		return egonet;
 	}
 
 	/* (non-Javadoc)
