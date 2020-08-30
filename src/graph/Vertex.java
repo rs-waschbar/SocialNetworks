@@ -45,4 +45,12 @@ public class Vertex implements Cloneable {
     public int hashCode() {
         return Objects.hash(num, edges);
     }
+
+    @Override
+    public String toString() {
+        return "Vertex{" +
+                "num=" + num +
+                ", edges=" + edges +
+                '}';
+    }
 }

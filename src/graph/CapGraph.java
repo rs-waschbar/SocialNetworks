@@ -25,8 +25,9 @@ public class CapGraph implements Graph {
 	public void addVertex(int num) {
 		if (num < 0) throw new IllegalArgumentException(
 								"num of vertex can't be less than zero");
-		if (vertices.containsKey(num)) throw new IllegalArgumentException(
-								"vertex is already added");
+		if (vertices.containsKey(num)) return;
+			//throw new IllegalArgumentException("vertex is already added");
+
 		vertices.put(num, new Vertex(num));
 	}
 
@@ -102,4 +103,16 @@ public class CapGraph implements Graph {
 		return export;
 	}
 
+	@Override
+	public String toString() {
+		/*System.out.println("******");
+		System.out.println("CapGraph");
+		if (vertices.size() == 0) {
+			System.out.println("Empty Graph");
+		}*/
+
+		return "CapGraph{" +
+				"vertices=" + vertices.keySet() +
+				'}';
+	}
 }
