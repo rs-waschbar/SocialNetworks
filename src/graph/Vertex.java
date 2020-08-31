@@ -12,23 +12,33 @@ import java.util.Objects;
 
 public class Vertex implements Cloneable {
     private final int num;
-    private HashSet<Integer> connectedTo;
+    private HashSet<Integer> edgesTo;
+    private HashSet<Integer> edgesFrom;
 
     public Vertex(int num) {
         this.num = num;
-        connectedTo = new HashSet<>();
+        edgesTo = new HashSet<>();
+        edgesFrom = new HashSet<>();
     }
 
     public int getNum() {
         return num;
     }
 
-    public HashSet<Integer> getConnects() {
-        return connectedTo;
+    public HashSet<Integer> getConnectsTo() {
+        return edgesTo;
+    }
+
+    public HashSet<Integer> getConnectsFrom() {
+        return edgesFrom;
     }
 
     public void addConnectTo(int vertNum) {
-        connectedTo.add(vertNum);
+        edgesTo.add(vertNum);
+    }
+
+    public void addConnectFrom(int vertNum) {
+        edgesFrom.add(vertNum);
     }
 
     @Override
@@ -37,19 +47,19 @@ public class Vertex implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         Vertex vertex = (Vertex) o;
         return num == vertex.num &&
-                Objects.equals(connectedTo, vertex.connectedTo);
+                Objects.equals(edgesTo, vertex.edgesTo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(num, connectedTo);
+        return Objects.hash(num, edgesTo);
     }
 
     @Override
     public String toString() {
         return "Vertex{" +
                 "num=" + num +
-                ", connectedTo=" + connectedTo +
+                ", connectedTo=" + edgesTo +
                 '}';
     }
 }

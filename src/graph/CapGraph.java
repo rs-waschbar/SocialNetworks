@@ -10,7 +10,6 @@ import java.util.*;
  */
 public class CapGraph implements Graph {
 	private HashMap<Integer, Vertex> vertices;
-	private HashSet<Edge> edges;
 
 	/**
 	 *
@@ -32,6 +31,19 @@ public class CapGraph implements Graph {
 		vertices.put(num, new Vertex(num));
 	}
 
+	/**
+	 *
+	 * @param num
+	 * @param vertex
+	 */
+	public void addVertex(int num, Vertex vertex) {
+		if (num < 0) throw new IllegalArgumentException(
+				"num of vertex can't be less than zero");
+		if (vertices.containsKey(num)) return;
+
+		vertices.put(num, vertex);
+	}
+
 	public Vertex getVertex(int num) {
 		if (!vertices.containsKey(num)) throw new IllegalArgumentException(
 				"Graph don't contains this Vertex number");
@@ -48,23 +60,24 @@ public class CapGraph implements Graph {
 	public void addEdge(int from, int to) {
 		if (from < 0 || to < 0) throw new IllegalArgumentException(
 				"num of vertex can't be less than zero");
+		Vertex vert1 = extractVertex(from);
+		Vertex vert2 = extractVertex(to);
+
+		vert1.addConnectTo(to);
+		vert2.addConnectFrom(from);
+	}
+
+	private Vertex extractVertex(int vertNum) {
 		Vertex vert;
+		if (vertices.containsKey(vertNum))
+			vert = vertices.get(vertNum);
 
-		if (vertices.containsKey(from)) {
-			vert = vertices.get(from);
-		}
 		else {
-			vert = new Vertex(from);
-			vertices.put(from, vert);
+			vert = new Vertex(vertNum);
+			vertices.put(vertNum, vert);
 		}
-		edges.add(new Edge(from, to));
-		vert.addConnectTo(to);
+		return vert;
 	}
-
-	public Set<Integer> getVertNums() {
-		return vertices.keySet();
-	}
-
 
 	/**
 	 *
@@ -76,16 +89,15 @@ public class CapGraph implements Graph {
 		if (center < 0) throw new IllegalArgumentException(
 								"num of vertex can't be less than zero");
         CapGraph egonet = new CapGraph();
-		if (!this.vertices.containsKey(center))
+		if (!vertices.containsKey(center))
 		    return egonet;
 
         egonet.addVertex(center);
-		HashSet<Integer> egoVerts = this.vertices.get(center).getConnects();
+		HashSet<Integer> egoVerts = this.vertices.get(center).getConnectsTo();
 		egoVerts.add(center);
 
 		for (Integer egoVert1 : egoVerts) {
-            HashSet<Integer> allVertNeighbours = this.vertices.get(egoVert1).getConnects();
-
+            HashSet<Integer> allVertNeighbours = this.vertices.get(egoVert1).getConnectsTo();
             for (Integer egoVert2 : egoVerts) {
                 if (allVertNeighbours.contains(egoVert2)) {
                     egonet.addEdge(egoVert1, egoVert2);
@@ -101,36 +113,42 @@ public class CapGraph implements Graph {
 	 */
 	@Override
 	public List<Graph> getSCCs() {
-		HashMap<Integer, HashSet<Integer>> reverseEdges = new HashMap<>();
-/*
-		for (Integer vert : vertices.keySet()) {
-			reverseEdges.put(vert, new HashSet<>());
-		}
+		ArrayList<Graph> sccGraphs = new ArrayList<>();
+		boolean isReverse = false;
+		ArrayList<Integer> verts = new ArrayList<>(vertices.keySet());
+		ArrayList<Integer> firstPass = dfs(verts, isReverse);
 
-		for (Integer startEdge : vertices.keySet()) {
-			HashSet<Integer> endEdges = vertices.get(startEdge).getEdges();
-			for (Integer endEdge : endEdges) {
-				reverseEdges.put(endEdge, )
+		HashSet<Integer> visited = new HashSet<>();
+		ArrayList<Integer> sccSubGraph;
+		CapGraph scc;
+
+		isReverse = true;
+		int v;
+
+		while (!firstPass.isEmpty()) {
+			sccSubGraph = new ArrayList<>();
+
+			v = firstPass.get(firstPass.size() - 1);
+			firstPass.remove(firstPass.size() - 1);
+
+			if (!visited.contains(v)) {
+				dfsVisit(v, visited, sccSubGraph, isReverse);
+				scc = new CapGraph();
+				for (Integer node : sccSubGraph) {
+					scc.addVertex(node);
+				}
+				sccGraphs.add(scc);
 			}
 		}
-*/
-
-		boolean isReverse = false;
-
-
-
-
-		return null;
+		return sccGraphs;
 	}
 
 	/**
 	 *
-	 * @param graph
 	 * @param verts
 	 * @return
 	 */
-	private ArrayList<Integer> dfs(Graph graph, ArrayList<Integer> verts, boolean isReverse,
-								   HashMap<Integer, HashSet<Integer>> reverseEdges) {
+	private ArrayList<Integer> dfs(ArrayList<Integer> verts, boolean isReverse) {
 		HashSet<Integer> visited = new HashSet<>();
 		ArrayList<Integer> finished = new ArrayList<>(verts.size());
 		int v;
@@ -138,27 +156,27 @@ public class CapGraph implements Graph {
 		while (!verts.isEmpty()) {
 			v = verts.get(verts.size() - 1);
 			verts.remove(verts.size() - 1);
+
 			if (!visited.contains(v)) {
-				dfsVisit(graph, v, visited, finished, isReverse, reverseEdges);
+				dfsVisit(v, visited, finished, isReverse);
 			}
+
 		}
 		return finished;
 	}
 
 	/**
 	 *
-	 * @param graph
 	 * @param v
 	 * @param visited
 	 * @param finished
 	 */
-	private void dfsVisit(Graph graph, int v, HashSet<Integer> visited,
-						  ArrayList<Integer> finished, boolean isReverse,
-						  HashMap<Integer, HashSet<Integer>> reverseEdges) {
+	private void dfsVisit(int v, HashSet<Integer> visited,
+						  ArrayList<Integer> finished, boolean isReverse) {
 		visited.add(v);
-		for (Integer n : getSCCNeighbours(v, isReverse, reverseEdges)) {
+		for (Integer n : getSCCNeighbours(v, isReverse)) {
 			if (!visited.contains(n)) {
-				dfsVisit(graph, n, visited, finished, isReverse, reverseEdges);
+				dfsVisit(n, visited, finished, isReverse);
 			}
 		}
 		finished.add(v);
@@ -169,14 +187,15 @@ public class CapGraph implements Graph {
 	 * @param vert
 	 * @return
 	 */
-	private HashSet<Integer> getSCCNeighbours(int vert, boolean isReverse,
-											  HashMap<Integer, HashSet<Integer>> reverseEdges) {
-		if (isReverse) {
-			return reverseEdges.get(vert);
-		}
-		else {
-			return vertices.get(vert).getConnects();
-		}
+	private HashSet<Integer> getSCCNeighbours(int vert, boolean isReverse) {
+		if (isReverse)
+			return vertices.get(vert).getConnectsFrom();
+		else
+			return vertices.get(vert).getConnectsTo();
+	}
+
+	public Set<Integer> getVertNums() {
+		return vertices.keySet();
 	}
 
 	/**
@@ -189,7 +208,7 @@ public class CapGraph implements Graph {
 
 		HashMap<Integer, HashSet<Integer>> export = new HashMap<>();
 		for (Integer key : vertices.keySet()) {
-			export.put(key, vertices.get(key).getConnects());
+			export.put(key, vertices.get(key).getConnectsTo());
 		}
 		return export;
 	}

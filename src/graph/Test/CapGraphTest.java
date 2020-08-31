@@ -1,5 +1,6 @@
-package graph;
+package graph.Test;
 
+import graph.CapGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.GraphLoader;
@@ -45,10 +46,10 @@ class CapGraphTest {
 //        System.out.println(graphFacebookUCSD.getVertex(14948));
 //        System.out.println(graphFacebookUCSD.getVertex(14949));
         assertEquals(1, graphFacebookUCSD.getVertex(14948)
-                .getConnects().size(),
+                .getConnectsTo().size(),
                 "Testing num of vertices for small Graph");
         assertEquals(2, graphFacebookUCSD.getVertex(14949)
-                        .getConnects().size(),
+                        .getConnectsTo().size(),
                 "Testing num of vertices for small Graph");
 
     }

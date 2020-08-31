@@ -21,7 +21,7 @@ public abstract class Grader implements Runnable {
 
     /* Print test descriptions neatly */
     public static String appendFeedback(int num, String test) {
-        return "\n**Test #" + num + ": " + test + "...";
+        return "\n**graph.Test #" + num + ": " + test + "...";
     }
 
 }
