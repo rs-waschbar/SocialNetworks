@@ -45,10 +45,10 @@ class CapGraphTest {
 //        System.out.println(graphFacebookUCSD.getVertex(14948));
 //        System.out.println(graphFacebookUCSD.getVertex(14949));
         assertEquals(1, graphFacebookUCSD.getVertex(14948)
-                .getEdges().size(),
+                .getConnects().size(),
                 "Testing num of vertices for small Graph");
         assertEquals(2, graphFacebookUCSD.getVertex(14949)
-                        .getEdges().size(),
+                        .getConnects().size(),
                 "Testing num of vertices for small Graph");
 
     }
